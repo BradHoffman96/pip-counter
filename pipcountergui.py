@@ -1,13 +1,18 @@
 from io import BytesIO
-import PIL.Image
-import PIL.ImageTk
+from time import sleep
 from multiprocessing import Process, Queue
+
 from Tkinter import *
 import numpy as np
+
 from picamera import PiCamera
 import cv2
-from time import sleep
-from test import testes
+import PIL.Image
+import PIL.ImageTk
+
+from matrix_display import sub_process
+
+
 camera = PiCamera()
 camera.start_preview()
 camera.preview.fullscreen = False
@@ -15,7 +20,7 @@ camera.preview.window = (50,50,200,200)
 sleep(2)    
 master = Tk()
 q = Queue()
-p = Process(target = testes, args=(q,))
+p = Process(target = sub_process, args=(q,))
 p.start()
 canvas = Canvas(master,width = 800,height= 600)
 canvas.pack()
@@ -81,7 +86,7 @@ def task():
     num_pips = 0
     for contour in contours:
         area = cv2.contourArea(contour)
-        if (area > 75000 and area < 500000):
+        if (area > 7500 and area < 500000):
             x, y, w, h = cv2.boundingRect(contour)
             dice = clone[y:y+h, x:x+w]
             num_pips = num_pips + count_pips(dice)
@@ -89,8 +94,8 @@ def task():
             
             bounded = cv2.rectangle(filtered,(x,y),(x+w,y+h), (255,0,0),3)
             
-    
-    q.put(num_pips)
+    print(num_pips)
+    q.put(str(num_pips))
     try:    
         im_out1 = cv2.resize(clone, (250,187))
     except: 
@@ -141,10 +146,13 @@ def task():
 
     
     stream.flush()
-    master.after(500,task)
-
-master.after(500,task)
-mainloop()
-master.quit()
+    master.after(100,task)
+if __name__ == '__main__':
+    x = 0
+    
+    master.after(100,task)
+    mainloop()
+    camera.close()
+        
 
 
