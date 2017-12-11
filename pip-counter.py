@@ -26,7 +26,7 @@ def count_pips(dice):
 
 #open camera
 cap = cv2.VideoCapture(0)
-
+print(cap)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
 
@@ -43,7 +43,7 @@ while(True):
     ret, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
     edges = cv2.Canny(thresh, 2, 4)
-    image, countours, hierarchy = cv2.findContours(thres, cv2.RET_EXTERNAL, cv2.CHAI_APPROX_SIMPLE)
+    image, contours, hierarchy = cv2.findContours(thres, cv2.RET_EXTERNAL, cv2.CHAI_APPROX_SIMPLE)
 
     for contour in contours:
         area = cv2.contourArea(contour)
@@ -55,7 +55,7 @@ while(True):
             num_pips = count_pips(dice)
 
             if (num_pips > 0):
-                #print some shit
+                print(num_pips)
                 #show some rects
 
 
